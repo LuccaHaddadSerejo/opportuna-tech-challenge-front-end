@@ -1,0 +1,14 @@
+.Screen {
+  display: flex;
+  min-height: 100vhz;
+  background-color: #f3f3f3;
+}
+
+@media (max-width: 1280px) {
+  .Screen {
+    flex-direction: column;
+  }
+  .HeaderLeftContainer {
+    flex: 1;
+  }
+}

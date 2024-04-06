@@ -1,0 +1,36 @@
+.RightContainer {
+  display: flex;
+  flex: 0 0 30%;
+  padding: 0;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  background-color: #ffffff;
+  min-height: 100%;
+  color: #424242;
+  border-left: 1px solid #ddd;
+}
+
+.SubHeaderRightContainer{
+  display: flex;
+  font-size: 1em;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  gap: 2em;
+  margin-bottom: 10px;
+}
+
+.RemindersContainer {
+  display: block;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  background-color: none;
+}
+
+.DeleteCurrentDayRemindersContainer{
+  margin-top: auto;
+  font-size: 1em;
+  padding: 10px;
+}

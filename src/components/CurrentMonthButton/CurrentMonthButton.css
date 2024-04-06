@@ -1,0 +1,14 @@
+.CurrentMonthButton {
+  justify-content: center;
+  align-items: center;
+  background-color: #5082ff;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 12px;
+  color: white;
+  transition: all 0.6s ease;
+}
+
+.CurrentMonthButton:hover {
+  background-color: #5082ff80;
+}

@@ -1,0 +1,21 @@
+.HeaderRightContainer {
+  display: flex;
+  font-weight: bold;
+  flex-direction: column;
+  height: 3em;
+  box-shadow: 0px 2px 5px 0px lightgray;
+}
+
+.ReminderAppTitle {
+  flex: 10;
+  font-size: 1.5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: none;
+  transition: all 0.6s ease;
+}
+
+.ReminderAppTitle:hover {
+  color: gray;
+}

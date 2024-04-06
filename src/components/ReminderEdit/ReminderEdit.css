@@ -1,0 +1,81 @@
+.ReminderEditButton {
+  display: flex;
+  grid-area: 1 / 4 / 2 / 5;
+  align-items: center;
+  justify-content: center;
+  background-color: #5082ff;
+  color: #ffffff;
+  transition: all 0.6s ease;
+}
+
+.ReminderEditButton:hover {
+  background-color: #5082ff80;
+  color: #424242;
+}
+
+.EditReminderPopUp {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 10px rgba(0,0,0,0.1);
+  z-index: 100;
+  animation: summon 0.4s linear 1;
+}
+
+.EditReminderPopUp form {
+  display: flex;
+  flex-direction: column;
+}
+
+.EditReminderPopUp input[type="time"],
+.EditReminderPopUp input[type="text"],
+.EditReminderPopUp input[type="date"],
+.EditReminderPopUp textarea {
+  border: none;
+  margin: 10px;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: #e8e8e8;
+  transition: 0.3s;
+ }
+
+.EditReminderPopUp button {
+  padding: 5px;
+  border-radius: 12px;
+  color: white;
+  margin: 5px;
+  cursor: pointer;
+  transition: all 0.6s ease;
+}
+
+.EditReminderPopUp button[type="submit"] {
+  background-color: #4CAF50;
+}
+
+.EditReminderPopUp button[type="submit"]:hover {
+  background-color: #4caf4fab;
+  color: #424242;
+}
+
+.EditReminderPopUp button[type="button"] {
+  background-color: #f44336;
+}
+
+.EditReminderPopUp button[type="button"]:hover {
+  background-color: #f44336a2;
+  color: #424242;
+}
+
+.EditReminderPopUp label {
+  transition: all 0.6s ease;
+  ;
+}
+
+.EditReminderPopUp label:hover {
+  transform: scale(1.2)!important;
+}

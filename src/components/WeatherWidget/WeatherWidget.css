@@ -1,0 +1,10 @@
+.ReminderWeatherWidget {
+  display: flex;
+  grid-area: 2 / 4 / 3 / 6;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0px 0px 12px 0px;
+  background-color:rgba(0, 255, 255, 0.153);
+  border-top: 0.5px solid white;
+  animation: summon 2s linear 1;
+}
