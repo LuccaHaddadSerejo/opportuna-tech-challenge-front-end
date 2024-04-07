@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import { remindersApi } from "../api/reminders";
 
 export interface ReminderState {
   id: number;
@@ -22,53 +23,13 @@ export default function RemindersProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [reminders, setReminders] = useState<ReminderState[]>([
-    {
-      id: 1,
-      date: "2024-04-04",
-      time: "09:00",
-      title: "Exercício",
-      description: "Fazer exercícios físicos",
-      city: "São Paulo",
-      color: "blue",
-    },
-    {
-      id: 2,
-      date: "2024-04-05",
-      time: "15:30",
-      title: "Reunião",
-      description: "Reunião de equipe",
-      city: "Rio de Janeiro",
-      color: "green",
-    },
-    {
-      id: 3,
-      date: "2024-04-06",
-      time: "18:00",
-      title: "Compras",
-      description: "Comprar mantimentos",
-      city: "Belo Horizonte",
-      color: "orange",
-    },
-    {
-      id: 4,
-      date: "2024-04-07",
-      time: "10:00",
-      title: "Dentista",
-      description: "Consulta com o dentista",
-      city: "Porto Alegre",
-      color: "red",
-    },
-    {
-      id: 5,
-      date: "2024-04-08",
-      time: "14:00",
-      title: "Aniversário",
-      description: "Festa de aniversário",
-      city: "Curitiba",
-      color: "pink",
-    },
-  ]);
+  const [reminders, setReminders] = useState<ReminderState[]>([]);
+  const [filteredReminders, setFilteredReminders] = useState<ReminderState[]>(
+    []
+  );
+  const [globalLoading, setGlobalLoading] = useState<boolean>(false);
+
+  const colorArr = ["blue", "green", "orange", "red", "pink"];
 
   reminders.sort((a, b) => {
     if (a.time < b.time) {
@@ -79,6 +40,97 @@ export default function RemindersProvider({
     }
     return 0;
   });
+
+  const createReminder = async (formData: unknown) => {
+    try {
+      setGlobalLoading(true);
+      const res = await remindersApi.post<ReminderState>(
+        "/reminders",
+        formData
+      );
+
+      setFilteredReminders((prevState: ReminderState[]) => [
+        ...prevState,
+        res.data,
+      ]);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setGlobalLoading(false);
+    }
+  };
+
+  const fetchReminders = async () => {
+    try {
+      setGlobalLoading(true);
+      const res = await remindersApi.get<ReminderState[]>("/reminders");
+      setReminders(res.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setGlobalLoading(false);
+    }
+  };
+
+  const filterReminders = async (date: string) => {
+    try {
+      setGlobalLoading(true);
+      const res = await remindersApi.get<ReminderState[]>("/reminders");
+      setFilteredReminders(
+        res.data.filter((reminder: ReminderState) => {
+          reminder.date === date;
+        })
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setGlobalLoading(false);
+    }
+  };
+
+  const updateReminder = async (id: number, formData: ReminderState) => {
+    try {
+      setGlobalLoading(true);
+      const res = await remindersApi.patch<ReminderState>(
+        `/reminders/${id}`,
+        formData
+      );
+
+      const updatedReminders = filteredReminders.map(
+        (reminder: ReminderState) => {
+          if (reminder.id === id) {
+            reminder = res.data;
+            return reminder;
+          } else {
+            return reminder;
+          }
+        }
+      );
+
+      setFilteredReminders(() => [...updatedReminders]);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setGlobalLoading(false);
+    }
+  };
+
+  const deleteReminder = async (id: number) => {
+    try {
+      setGlobalLoading(true);
+      await remindersApi.delete<void>(`/reminders/${id}`);
+
+      const updatedReminders = filteredReminders.filter(
+        (reminder: ReminderState) => reminder.id !== id
+      );
+
+      setFilteredReminders(() => [...updatedReminders]);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setGlobalLoading(false);
+    }
+  };
 
   return (
     <RemindersContext.Provider value={{ reminders, setReminders }}>
