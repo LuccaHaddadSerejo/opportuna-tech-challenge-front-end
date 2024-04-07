@@ -22,6 +22,7 @@ interface CalendarContextProps {
   goToNextMonth: () => void;
   goToPreviousMonth: () => void;
   goToCurrMonth: () => void;
+  changeSelectedDate: (value: number) => void;
   currMonthName: string;
   currMonth: number;
   monthData: MonthData;
@@ -110,6 +111,13 @@ export default function CalendarProvider({
     setcurrMonth(new Date().getMonth() + 1);
   };
 
+  const changeSelectedDate = (day: number) => {
+    const selectedDateObj: SelectedDateProps = {
+      date: new Date(currYear, currMonth - 1, day),
+    };
+    setSelectedDate(selectedDateObj);
+  };
+
   return (
     <CalendarContext.Provider
       value={{
@@ -120,6 +128,7 @@ export default function CalendarProvider({
         goToNextMonth,
         goToPreviousMonth,
         goToCurrMonth,
+        changeSelectedDate,
         currMonthName,
         monthData,
         setCurrMonthName,
