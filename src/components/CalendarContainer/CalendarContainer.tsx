@@ -11,6 +11,7 @@ function Calendar() {
     setCurrMonthName,
     monthNames,
     setCalendarMonth,
+    changeSelectedDate,
   } = useContext(CalendarContext);
 
   useEffect(() => {
@@ -63,7 +64,10 @@ function Calendar() {
 
         {calendarMonth.daysOfPrevMonth.map((prevMonthDay) => {
           return (
-            <button className="PrevMonth" key={prevMonthDay}>
+            <button
+              onClick={() => changeSelectedDate(prevMonthDay)}
+              className="PrevMonth"
+              key={prevMonthDay}>
               {prevMonthDay}
             </button>
           );
@@ -71,7 +75,10 @@ function Calendar() {
 
         {calendarMonth.daysOfCurrMonth.map((currentDayDate) => {
           return (
-            <button className={"MonthlyDay"} key={currentDayDate}>
+            <button
+              onClick={() => changeSelectedDate(currentDayDate)}
+              className={"MonthlyDay"}
+              key={currentDayDate}>
               {currentDayDate}
             </button>
           );
@@ -79,7 +86,10 @@ function Calendar() {
 
         {calendarMonth.daysOfNextMonth.map((nextMonthDay) => {
           return (
-            <button className="NextMonth" key={nextMonthDay}>
+            <button
+              onClick={() => changeSelectedDate(nextMonthDay)}
+              className="NextMonth"
+              key={nextMonthDay}>
               {nextMonthDay}
             </button>
           );
