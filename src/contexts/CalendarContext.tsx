@@ -41,10 +41,15 @@ export default function CalendarProvider({
   });
 
   const [currMonth, setcurrMonth] = useState<number>(new Date().getMonth() + 1);
+  const [currYear, setCurrYear] = useState<number>(new Date().getFullYear());
+
+  const isLeapYear = (year: number): boolean => {
+    return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+  };
 
   const monthData: MonthData = {
     "1": 31,
-    "2": 28,
+    "2": isLeapYear(currYear) ? 29 : 28,
     "3": 31,
     "4": 30,
     "5": 31,
@@ -84,6 +89,7 @@ export default function CalendarProvider({
 
   const goToNextMonth = (): void => {
     if (currMonth === 12) {
+      setCurrYear((prevYear) => prevYear + 1);
       setcurrMonth(1);
       return;
     }
@@ -92,6 +98,7 @@ export default function CalendarProvider({
 
   const goToPreviousMonth = (): void => {
     if (currMonth === 1) {
+      setCurrYear((prevYear) => prevYear - 1);
       setcurrMonth(12);
       return;
     }
@@ -99,6 +106,7 @@ export default function CalendarProvider({
   };
 
   const goToCurrMonth = (): void => {
+    setCurrYear(new Date().getFullYear());
     setcurrMonth(new Date().getMonth() + 1);
   };
 
