@@ -1,10 +1,16 @@
+import { useContext } from "react";
 import "./CurrentMonthButton.css";
+import { CalendarContext } from "../../contexts/CalendarContext";
 
 // Go to current month
 function CurrentMonthButton() {
+  const { goToCurrMonth } = useContext(CalendarContext);
+
   return (
     <>
-      <button className="CurrentMonthButton">Current</button>
+      <button onClick={() => goToCurrMonth()} className="CurrentMonthButton">
+        Current
+      </button>
     </>
   );
 }
