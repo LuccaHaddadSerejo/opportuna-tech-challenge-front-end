@@ -22,12 +22,17 @@ interface CalendarContextProps {
   goToNextMonth: () => void;
   goToPreviousMonth: () => void;
   goToCurrMonth: () => void;
-  changeSelectedDate: (value: number) => void;
+  changeSelectedDate: (
+    valueOne: number,
+    valueTwo: boolean,
+    valueThree: boolean
+  ) => void;
   currMonthName: string;
   currMonth: number;
   monthData: MonthData;
   setCurrMonthName: (value: string) => void;
   monthNames: Array<string>;
+  currYear: number;
 }
 
 export const CalendarContext = createContext({} as CalendarContextProps);
@@ -64,18 +69,18 @@ export default function CalendarProvider({
   };
 
   const monthNames: string[] = [
-    "Janeiro",
-    "Fevereiro",
-    "Março",
-    "Abril",
-    "Maio",
-    "Junho",
-    "Julho",
-    "Agosto",
-    "Setembro",
-    "Outubro",
-    "Novembro",
-    "Dezembro",
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "Setember",
+    "October",
+    "November",
+    "December",
   ];
 
   const [currMonthName, setCurrMonthName] = useState<string>(
@@ -111,9 +116,23 @@ export default function CalendarProvider({
     setcurrMonth(new Date().getMonth() + 1);
   };
 
-  const changeSelectedDate = (day: number) => {
+  const changeSelectedDate = (
+    day: number,
+    isPrev: boolean,
+    isNext: boolean
+  ) => {
+    let correctMonth = currMonth - 1;
+
+    if (isPrev) {
+      correctMonth = currMonth - 2;
+    }
+
+    if (isNext) {
+      correctMonth = currMonth;
+    }
+
     const selectedDateObj: SelectedDateProps = {
-      date: new Date(currYear, currMonth - 1, day),
+      date: new Date(currYear, correctMonth, day),
     };
     setSelectedDate(selectedDateObj);
   };
@@ -134,6 +153,7 @@ export default function CalendarProvider({
         setCurrMonthName,
         monthNames,
         currMonth,
+        currYear,
       }}>
       {children}
     </CalendarContext.Provider>
