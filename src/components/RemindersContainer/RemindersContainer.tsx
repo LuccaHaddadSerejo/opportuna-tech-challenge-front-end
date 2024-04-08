@@ -2,37 +2,55 @@ import "./RemindersContainer.css";
 import ReminderDelete from "../ReminderDelete/ReminderDelete";
 import WeatherWidget from "../WeatherWidget/WeatherWidget";
 import ReminderEdit from "../ReminderEdit/ReminderEdit";
+import { useContext, useEffect } from "react";
+import {
+  ReminderState,
+  RemindersContext,
+} from "../../contexts/RemindersContext";
+import { CalendarContext } from "../../contexts/CalendarContext";
 
 function Reminders() {
+  const { filteredReminders, filterReminders, fetchReminders } =
+    useContext(RemindersContext);
+  const { selectedDate } = useContext(CalendarContext);
+
+  useEffect(() => {
+    fetchReminders();
+  }, []);
+
+  useEffect(() => {
+    filterReminders(selectedDate.date);
+  }, [selectedDate]);
+
   return (
     <>
       <ul>
-        <li className="Reminder">
-          <div className="ReminderTime" style={{ backgroundColor: "" }}>
-            12:00
-          </div>
-          <div
-            className="ReminderTitle"
-            style={{
-              backgroundColor: "blue",
-              color: "white",
-            }}
-          >
-            Reminder Title
-          </div>
-          <div
-            className="ReminderDescription"
-            style={{
-              backgroundColor: "whitesmoke",
-              color: "black",
-            }}
-          >
-            Reminder Description
-          </div>
-          <ReminderEdit />
-          <WeatherWidget />
-          <ReminderDelete />
-        </li>
+        {filteredReminders.map((reminder: ReminderState) => (
+          <li className="Reminder" key={reminder.id}>
+            <div className="ReminderTime" style={{ backgroundColor: "" }}>
+              {reminder.time}
+            </div>
+            <div
+              className="ReminderTitle"
+              style={{
+                backgroundColor: reminder.color,
+                color: "white",
+              }}>
+              {reminder.title}
+            </div>
+            <div
+              className="ReminderDescription"
+              style={{
+                backgroundColor: "whitesmoke",
+                color: "black",
+              }}>
+              {reminder.description}
+            </div>
+            <ReminderEdit />
+            <WeatherWidget />
+            <ReminderDelete id={reminder.id} />
+          </li>
+        ))}
       </ul>
     </>
   );
