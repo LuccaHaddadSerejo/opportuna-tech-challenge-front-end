@@ -8,12 +8,12 @@ export interface ReminderState {
   title: string;
   description: string;
   city: string;
-  color: string;
+  color: string | null;
 }
 
 type CreateReminderState = Omit<ReminderState, "id" | "date">;
 
-type UpdateReminderState = Partial<Omit<ReminderState, "id">>;
+type UpdateReminderState = Omit<ReminderState, "id" | "title" | "description">;
 
 interface RemindersContextProps {
   reminders: ReminderState[];
@@ -28,6 +28,7 @@ interface RemindersContextProps {
     valueThree: Date
   ) => void;
   deleteReminder: (value: number) => void;
+  deleteReminderByDay: (value: Date) => void;
   editedReminderDate: boolean;
 }
 
@@ -116,7 +117,8 @@ export default function RemindersProvider({
       setFilteredReminders(
         formatData.filter(
           (reminder: ReminderState) =>
-            reminder.date.slice(0, 10) === new Date().toISOString().slice(0, 10)
+            reminder.date.split("T")[0] ===
+            new Date().toISOString().split("T")[0]
         )
       );
     } catch (error) {
@@ -129,7 +131,7 @@ export default function RemindersProvider({
       setFilteredReminders(() =>
         reminders.filter(
           (reminder: ReminderState) =>
-            reminder.date.slice(0, 10) === date.toISOString().slice(0, 10)
+            reminder.date.split("T")[0] === date.toISOString().split("T")[0]
         )
       );
     } catch (error) {
@@ -143,38 +145,22 @@ export default function RemindersProvider({
     date: Date
   ) => {
     try {
-      let formatData = {} as { [key: string]: string | number };
-
-      Object.entries(formData).forEach(([key, value]) => {
-        if (value !== "") {
-          formatData[key] = value;
-        }
-      });
-
-      if (formData.time) {
-        function setTimeInDate(date: Date, hours: string, minutes: string) {
-          const newDate = new Date(date);
-          newDate.setHours(Number(hours) - 3);
-          newDate.setMinutes(Number(minutes));
-          return newDate.toISOString();
-        }
-
-        formatData = {
-          ...formatData,
-          time: setTimeInDate(
-            date,
-            formData.time.slice(0, 2),
-            formData.time.slice(3)
-          ),
-        };
+      function setTimeInDate(date: Date, hours: string, minutes: string) {
+        const newDate = new Date(date);
+        newDate.setHours(Number(hours) - 3);
+        newDate.setMinutes(Number(minutes));
+        return newDate.toISOString();
       }
 
-      if (formData.date) {
-        formatData = {
-          ...formatData,
-          date: `${formData.date}T00:00:00Z`,
-        };
-      }
+      const formatData = {
+        ...formData,
+        time: setTimeInDate(
+          date,
+          formData.time.slice(0, 2),
+          formData.time.slice(3)
+        ),
+        date: `${formData.date}T00:00:00Z`,
+      };
 
       const res = await remindersApi.patch<ReminderState>(
         `/reminders/${id}`,
@@ -183,7 +169,16 @@ export default function RemindersProvider({
 
       const formatRes = { ...res.data, time: res.data.time.slice(11, 16) };
 
-      const updatedReminders = filteredReminders.map(
+      const updatedReminders = reminders.map((reminder: ReminderState) => {
+        if (reminder.id === id) {
+          reminder = formatRes;
+          return reminder;
+        } else {
+          return reminder;
+        }
+      });
+
+      const updatedFilteredReminders = filteredReminders.map(
         (reminder: ReminderState) => {
           if (reminder.id === id) {
             reminder = formatRes;
@@ -195,7 +190,7 @@ export default function RemindersProvider({
       );
 
       setReminders(() => [...updatedReminders]);
-      setFilteredReminders(() => [...updatedReminders]);
+      setFilteredReminders(() => [...updatedFilteredReminders]);
       setEditedReminderDate(!editedReminderDate);
     } catch (error) {
       console.error(error);
@@ -221,6 +216,33 @@ export default function RemindersProvider({
     }
   };
 
+  const deleteReminderByDay = async (date: Date) => {
+    const idList: Array<number> = reminders
+      .filter(
+        (reminder: ReminderState) =>
+          reminder.date.split("T")[0] === date.toISOString().split("T")[0]
+      )
+      .map((reminder: ReminderState) => reminder.id);
+
+    const data = {
+      idList: idList,
+    };
+
+    try {
+      await remindersApi.post<void>(`/reminders/deleteByDay`, data);
+
+      const filterDeleted: Array<ReminderState> = reminders.filter(
+        (reminder: ReminderState) =>
+          reminder.date.split("T")[0] !== date.toISOString().split("T")[0]
+      );
+
+      setReminders(() => [...filterDeleted]);
+      setFilteredReminders(() => []);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <RemindersContext.Provider
       value={{
@@ -233,6 +255,7 @@ export default function RemindersProvider({
         filterReminders,
         updateReminder,
         editedReminderDate,
+        deleteReminderByDay,
       }}>
       {children}
     </RemindersContext.Provider>
