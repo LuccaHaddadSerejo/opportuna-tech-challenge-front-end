@@ -115,7 +115,12 @@ function Calendar() {
               <ul>
                 {filterReminders.map((reminder: ReminderState) => {
                   return (
-                    <li key={reminder.id}>
+                    <li
+                      className="ReminderInCalendar"
+                      style={{
+                        backgroundColor: reminder.color,
+                      }}
+                      key={reminder.id}>
                       <p>{reminder.title}</p>
                     </li>
                   );
@@ -194,7 +199,12 @@ function Calendar() {
               <ul>
                 {filterReminders.map((reminder: ReminderState) => {
                   return (
-                    <li key={reminder.id}>
+                    <li
+                      className="ReminderInCalendar"
+                      style={{
+                        backgroundColor: reminder.color,
+                      }}
+                      key={reminder.id}>
                       <p>{reminder.title}</p>
                     </li>
                   );
