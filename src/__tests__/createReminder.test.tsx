@@ -1,25 +1,10 @@
-import { remindersApi } from "@/api/reminders";
 import ReminderAdd from "@/components/ReminderAdd/ReminderAdd";
 import { RemindersContext } from "@/contexts/RemindersContext";
-import { render } from "@testing-library/react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
 import { ReminderState } from "@/contexts/RemindersContext";
 
 describe("createReminder", () => {
   it("should create a reminder", async () => {
-    const mockApiResponse = {
-      data: {
-        id: 1,
-        date: "2024-04-09T00:00:00Z",
-        time: "15:30",
-        title: "Test Reminder",
-        description: "This is a test reminder",
-        city: "brasília",
-        color: "purple",
-      },
-    };
-
-    jest.spyOn(remindersApi, "post").mockResolvedValueOnce(mockApiResponse);
-
     const formData = {
       city: "brasília",
       color: "purple",
@@ -27,9 +12,8 @@ describe("createReminder", () => {
       time: "15:30",
       title: "Para teste",
     };
-    const mockDate = new Date("2024-04-25T14:00:00");
 
-    const createReminder = jest.fn();
+    const createReminder = jest.fn(() => Promise.resolve());
     const reminders: ReminderState[] = [];
     const setReminders = jest.fn();
     const deleteReminder = jest.fn();
@@ -40,7 +24,7 @@ describe("createReminder", () => {
     const editedReminderDate = false;
     const deleteReminderByDay = jest.fn();
 
-    render(
+    const { getByText, getByTestId } = render(
       <RemindersContext.Provider
         value={{
           reminders,
@@ -58,10 +42,27 @@ describe("createReminder", () => {
       </RemindersContext.Provider>
     );
 
-    const newReminder = createReminder(formData, mockDate);
+    fireEvent.click(getByText("Add a reminder"));
 
-    expect(remindersApi.post).toHaveBeenCalledWith(formData, mockDate);
-    expect(createReminder).toHaveBeenCalledWith(formData, mockDate);
-    expect(newReminder).toEqual(mockApiResponse);
+    fireEvent.change(getByTestId("title"), {
+      target: { value: formData.title },
+    });
+    fireEvent.change(getByTestId("description"), {
+      target: { value: formData.description },
+    });
+    fireEvent.change(getByTestId("time"), {
+      target: { value: formData.time },
+    });
+    fireEvent.change(getByTestId("city"), {
+      target: { value: formData.city },
+    });
+    fireEvent.click(getByTestId(`color-${formData.color}`));
+
+    fireEvent.submit(getByTestId("ReminderAddForm"));
+
+    await waitFor(() => expect(createReminder).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(createReminder).toHaveBeenCalledWith(formData, expect.any(Date))
+    );
   });
 });
