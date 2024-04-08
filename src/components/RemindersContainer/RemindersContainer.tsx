@@ -10,17 +10,21 @@ import {
 import { CalendarContext } from "../../contexts/CalendarContext";
 
 function Reminders() {
-  const { filteredReminders, filterReminders, fetchReminders } =
-    useContext(RemindersContext);
+  const {
+    filteredReminders,
+    filterReminders,
+    fetchReminders,
+    editedReminderDate,
+  } = useContext(RemindersContext);
   const { selectedDate } = useContext(CalendarContext);
 
   useEffect(() => {
     fetchReminders();
-  }, []);
+  }, [editedReminderDate]);
 
   useEffect(() => {
     filterReminders(selectedDate.date);
-  }, [selectedDate]);
+  }, [selectedDate, filteredReminders]);
 
   return (
     <>
@@ -46,7 +50,7 @@ function Reminders() {
               }}>
               {reminder.description}
             </div>
-            <ReminderEdit />
+            <ReminderEdit id={reminder.id} />
             <WeatherWidget
               city={reminder.city.toLowerCase()}
               date={selectedDate.date.toISOString().split("T")[0]}
