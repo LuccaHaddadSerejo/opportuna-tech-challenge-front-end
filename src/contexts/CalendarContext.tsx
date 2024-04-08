@@ -69,18 +69,18 @@ export default function CalendarProvider({
   };
 
   const monthNames: string[] = [
-    "Janeiro",
-    "Fevereiro",
-    "Março",
-    "Abril",
-    "Maio",
-    "Junho",
-    "Julho",
-    "Agosto",
-    "Setembro",
-    "Outubro",
-    "Novembro",
-    "Dezembro",
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "Setember",
+    "October",
+    "November",
+    "December",
   ];
 
   const [currMonthName, setCurrMonthName] = useState<string>(
