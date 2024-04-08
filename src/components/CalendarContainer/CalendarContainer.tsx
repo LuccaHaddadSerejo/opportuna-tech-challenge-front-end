@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react";
 import "./CalendarContainer.css";
 import { CalendarContext } from "../../contexts/CalendarContext";
+import { RemindersContext } from "../../contexts/RemindersContext";
 
 function Calendar() {
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -12,7 +13,10 @@ function Calendar() {
     monthNames,
     setCalendarMonth,
     changeSelectedDate,
+    selectedDate,
   } = useContext(CalendarContext);
+
+  const { filterReminders } = useContext(RemindersContext);
 
   useEffect(() => {
     const lastDayOfCurrMonthValue = new Date(
@@ -51,6 +55,11 @@ function Calendar() {
     setCurrMonthName(monthNames[currMonth - 1]);
   }, [currMonth]);
 
+  const changeDateAndFilterReminders = (day: number) => {
+    changeSelectedDate(day);
+    filterReminders(selectedDate.date);
+  };
+
   return (
     <>
       <div className="CalendarApp">
@@ -65,7 +74,7 @@ function Calendar() {
         {calendarMonth.daysOfPrevMonth.map((prevMonthDay) => {
           return (
             <button
-              onClick={() => changeSelectedDate(prevMonthDay)}
+              onClick={() => changeDateAndFilterReminders(prevMonthDay)}
               className="PrevMonth"
               key={prevMonthDay}>
               {prevMonthDay}
@@ -76,7 +85,7 @@ function Calendar() {
         {calendarMonth.daysOfCurrMonth.map((currentDayDate) => {
           return (
             <button
-              onClick={() => changeSelectedDate(currentDayDate)}
+              onClick={() => changeDateAndFilterReminders(currentDayDate)}
               className={"MonthlyDay"}
               key={currentDayDate}>
               {currentDayDate}
@@ -87,7 +96,7 @@ function Calendar() {
         {calendarMonth.daysOfNextMonth.map((nextMonthDay) => {
           return (
             <button
-              onClick={() => changeSelectedDate(nextMonthDay)}
+              onClick={() => changeDateAndFilterReminders(nextMonthDay)}
               className="NextMonth"
               key={nextMonthDay}>
               {nextMonthDay}
