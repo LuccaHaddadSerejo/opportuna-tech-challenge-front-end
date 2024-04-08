@@ -47,7 +47,10 @@ function Reminders() {
               {reminder.description}
             </div>
             <ReminderEdit />
-            <WeatherWidget />
+            <WeatherWidget
+              city={reminder.city.toLowerCase()}
+              date={selectedDate.date.toISOString().split("T")[0]}
+            />
             <ReminderDelete id={reminder.id} />
           </li>
         ))}

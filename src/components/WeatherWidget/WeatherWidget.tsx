@@ -16,15 +16,14 @@ interface WeatherData {
   dt_txt: string;
 }
 
+interface getWeatherProps {
+  city: string;
+  date: string;
+}
+
 const API_KEY = "2cddc023dd09005c1b277ed47e80342e";
 
-// Mock reminder
-const reminder = {
-  date: "2024-04-05",
-  city: "brasília",
-};
-
-function WeatherWidget() {
+function WeatherWidget({ city, date }: getWeatherProps) {
   const [weather, setWeather] = useState<WeatherData[]>([]);
 
   const currentDate = new Date().toISOString().split("T")[0];
@@ -35,18 +34,18 @@ function WeatherWidget() {
     async function getWeather() {
       try {
         const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/forecast?q=${reminder.city}&appid=${API_KEY}&units=metric`
+          `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`
         );
         const data = (await response.json()) as WeatherResponse;
 
-        if (reminder.date == currentDate) {
+        if (date == currentDate) {
           const currentDateData = data.list.filter((item) =>
             item.dt_txt.includes(currentDate)
           );
           setWeather(currentDateData);
         } else {
           const nextDaysData = data.list.filter((item) =>
-            item.dt_txt.includes(reminder.date + " 12:00:00")
+            item.dt_txt.includes(date + " 12:00:00")
           );
           setWeather(nextDaysData);
         }
@@ -55,12 +54,12 @@ function WeatherWidget() {
       }
     }
 
-    if (currentDate <= reminder.date && intervalOfDays.length <= 6) {
+    if (currentDate <= date && intervalOfDays.length <= 6) {
       getWeather();
     }
   }, []);
 
-  if (currentDate <= reminder.date) {
+  if (currentDate <= date) {
     if (intervalOfDays.length <= 6) {
       return (
         <>
@@ -71,8 +70,7 @@ function WeatherWidget() {
                 <img
                   src={`./assets/${weather[0]?.weather[0]?.icon}@2x.png`}
                   width="50"
-                  height="50"
-                ></img>
+                  height="50"></img>
               </p>
               <p>{weather[0]?.main.temp}ºC</p>
             </div>
