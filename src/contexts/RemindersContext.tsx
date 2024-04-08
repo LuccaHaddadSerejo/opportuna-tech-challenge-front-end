@@ -11,9 +11,21 @@ export interface ReminderState {
   color: string;
 }
 
+type CreateReminderState = Omit<ReminderState, "id" | "date">;
+
 interface RemindersContextProps {
   reminders: ReminderState[];
   setReminders: (value: ReminderState[]) => void;
+  filteredReminders: ReminderState[];
+  createReminder: (valueOne: CreateReminderState, valueTwo: Date) => void;
+  fetchReminders: () => void;
+  filterReminders: (value: Date) => void;
+  updateReminder: (
+    valueOne: number,
+    valueTwo: CreateReminderState,
+    valueThree: Date
+  ) => void;
+  deleteReminder: (value: number) => void;
 }
 
 export const RemindersContext = createContext({} as RemindersContextProps);
@@ -27,9 +39,6 @@ export default function RemindersProvider({
   const [filteredReminders, setFilteredReminders] = useState<ReminderState[]>(
     []
   );
-  const [globalLoading, setGlobalLoading] = useState<boolean>(false);
-
-  const colorArr = ["blue", "green", "orange", "red", "pink"];
 
   reminders.sort((a, b) => {
     if (a.time < b.time) {
@@ -41,59 +50,83 @@ export default function RemindersProvider({
     return 0;
   });
 
-  const createReminder = async (formData: unknown) => {
+  const createReminder = async (
+    formData: CreateReminderState,
+    date: Date
+  ): Promise<void> => {
+    const formatData = {
+      ...formData,
+      date: date.toISOString(),
+      time: date.toISOString(),
+    };
+
     try {
-      setGlobalLoading(true);
       const res = await remindersApi.post<ReminderState>(
         "/reminders",
-        formData
+        formatData
       );
+
+      const formatRes = { ...res.data, time: res.data.time.slice(11, 16) };
 
       setFilteredReminders((prevState: ReminderState[]) => [
         ...prevState,
-        res.data,
+        formatRes,
       ]);
+      setReminders((prevState: ReminderState[]) => [...prevState, formatRes]);
     } catch (error) {
       console.error(error);
-    } finally {
-      setGlobalLoading(false);
     }
   };
 
   const fetchReminders = async () => {
     try {
-      setGlobalLoading(true);
       const res = await remindersApi.get<ReminderState[]>("/reminders");
-      setReminders(res.data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setGlobalLoading(false);
-    }
-  };
 
-  const filterReminders = async (date: string) => {
-    try {
-      setGlobalLoading(true);
-      const res = await remindersApi.get<ReminderState[]>("/reminders");
+      const formatData = res.data.map((reminder: ReminderState) => ({
+        ...reminder,
+        time: reminder.time.slice(11, 16),
+      }));
+
+      setReminders(formatData);
       setFilteredReminders(
-        res.data.filter((reminder: ReminderState) => {
-          reminder.date === date;
-        })
+        formatData.filter(
+          (reminder: ReminderState) =>
+            reminder.date.slice(0, 10) === new Date().toISOString().slice(0, 10)
+        )
       );
     } catch (error) {
       console.error(error);
-    } finally {
-      setGlobalLoading(false);
     }
   };
 
-  const updateReminder = async (id: number, formData: ReminderState) => {
+  const filterReminders = async (date: Date) => {
     try {
-      setGlobalLoading(true);
+      setFilteredReminders(() =>
+        reminders.filter(
+          (reminder: ReminderState) =>
+            reminder.date.slice(0, 10) === date.toISOString().slice(0, 10)
+        )
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const updateReminder = async (
+    id: number,
+    formData: CreateReminderState,
+    date: Date
+  ) => {
+    try {
+      const formatData = {
+        ...formData,
+        date: date.toISOString(),
+        time: date.toISOString(),
+      };
+
       const res = await remindersApi.patch<ReminderState>(
         `/reminders/${id}`,
-        formData
+        formatData
       );
 
       const updatedReminders = filteredReminders.map(
@@ -110,30 +143,40 @@ export default function RemindersProvider({
       setFilteredReminders(() => [...updatedReminders]);
     } catch (error) {
       console.error(error);
-    } finally {
-      setGlobalLoading(false);
     }
   };
 
   const deleteReminder = async (id: number) => {
     try {
-      setGlobalLoading(true);
       await remindersApi.delete<void>(`/reminders/${id}`);
 
-      const updatedReminders = filteredReminders.filter(
+      const updatedReminders = reminders.filter(
         (reminder: ReminderState) => reminder.id !== id
       );
 
-      setFilteredReminders(() => [...updatedReminders]);
+      const updatedFilteredReminders = filteredReminders.filter(
+        (reminder: ReminderState) => reminder.id !== id
+      );
+
+      setReminders(() => [...updatedReminders]);
+      setFilteredReminders(() => [...updatedFilteredReminders]);
     } catch (error) {
       console.error(error);
-    } finally {
-      setGlobalLoading(false);
     }
   };
 
   return (
-    <RemindersContext.Provider value={{ reminders, setReminders }}>
+    <RemindersContext.Provider
+      value={{
+        reminders,
+        setReminders,
+        createReminder,
+        deleteReminder,
+        fetchReminders,
+        filteredReminders,
+        filterReminders,
+        updateReminder,
+      }}>
       {children}
     </RemindersContext.Provider>
   );
