@@ -8,9 +8,21 @@ import { CalendarContext } from "../../contexts/CalendarContext";
 
 interface ReminderEditProps {
   id: number;
+  time: string;
+  date: string;
+  city: string;
+  defaultColor: string | null;
 }
 
-function ReminderEdit({ id }: ReminderEditProps) {
+function ReminderEdit({
+  id,
+  time,
+  date,
+  city,
+  defaultColor,
+}: ReminderEditProps) {
+  const checkColor = defaultColor || "";
+
   const {
     register,
     handleSubmit,
@@ -42,23 +54,18 @@ function ReminderEdit({ id }: ReminderEditProps) {
           <div className="EditReminderPopUp">
             <form onSubmit={handleSubmit(onSubmit)}>
               <input
-                {...register("title")}
-                type="text"
-                name="title"
-                maxLength={15}
-                placeholder="Reminder Title"
+                {...register("time")}
+                type="time"
+                name="time"
+                defaultValue={time}
               />
-              {errors.title && <span>{errors.title.message}</span>}
-              <textarea
-                {...register("description")}
-                name="description"
-                maxLength={30}
-                placeholder="Reminder Description"
-              />
-              {errors.description && <span>{errors.description.message}</span>}
-              <input {...register("time")} type="time" name="time" />
               {errors.time && <span>{errors.time.message}</span>}
-              <input {...register("date")} type="date" name="date" />
+              <input
+                {...register("date")}
+                type="date"
+                name="date"
+                defaultValue={date}
+              />
               {errors.date && <span>{errors.date.message}</span>}
               <input
                 {...register("city")}
@@ -66,6 +73,7 @@ function ReminderEdit({ id }: ReminderEditProps) {
                 name="city"
                 maxLength={15}
                 placeholder="City"
+                defaultValue={city}
               />
               {errors.city && <span>{errors.city.message}</span>}
               <div className="ColorPicker">
@@ -86,8 +94,9 @@ function ReminderEdit({ id }: ReminderEditProps) {
                         {...register("color")}
                         type="radio"
                         name="color"
-                        value={color}
                         style={{ display: "none" }}
+                        value={color}
+                        defaultChecked={color === checkColor}
                       />
                     </label>
                   )
