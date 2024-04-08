@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { remindersApi } from "../api/reminders";
 
 export interface ReminderState {
@@ -50,13 +50,23 @@ export default function RemindersProvider({
     return 0;
   });
 
+  filteredReminders.sort((a, b) => {
+    if (a.time < b.time) {
+      return -1;
+    }
+    if (a.time > b.time) {
+      return 1;
+    }
+    return 0;
+  });
+
   const createReminder = async (
     formData: CreateReminderState,
     date: Date
   ): Promise<void> => {
     function setTimeInDate(date: Date, hours: string, minutes: string) {
       const newDate = new Date(date);
-      newDate.setHours(Number(hours));
+      newDate.setHours(Number(hours) - 3);
       newDate.setMinutes(Number(minutes));
       return newDate.toISOString();
     }
