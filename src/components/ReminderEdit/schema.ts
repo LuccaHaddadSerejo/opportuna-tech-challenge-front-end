@@ -1,23 +1,27 @@
 import { z } from "zod";
 
+const validColors = ["blue", "red", "green", "yellow", "purple", "orange"];
+
 export const schema = z.object({
-  title: z
-    .string()
-    .max(30, { message: "The reminder title can only have up to 30 caracters" })
-    .optional(),
-  description: z
-    .string()
-    .max(30, {
-      message: "The reminder description can only have up to 30 caracters",
-    })
-    .optional(),
-  time: z.string().optional(),
-  date: z.string().optional(),
+  time: z.string().min(1, { message: "The reminder must have a time" }),
+  date: z.string().min(1, { message: "The reminder must have a date" }),
   city: z
     .string()
-    .max(15, { message: "The reminder city can only have up to 15 caracters" })
-    .optional(),
-  color: z.string().optional(),
+    .min(1, { message: "The reminder must have a city" })
+    .max(15, {
+      message: "The reminder city can only have up to 15 characters",
+    }),
+  color: z
+    .string()
+    .nullable()
+    .refine(
+      (value) => {
+        return value !== null && validColors.includes(value);
+      },
+      {
+        message: "The reminder must have a color",
+      }
+    ),
 });
 
 export type UpdateReminder = z.infer<typeof schema>;
