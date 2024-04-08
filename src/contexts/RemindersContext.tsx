@@ -54,10 +54,21 @@ export default function RemindersProvider({
     formData: CreateReminderState,
     date: Date
   ): Promise<void> => {
+    function setTimeInDate(date: Date, hours: string, minutes: string) {
+      const newDate = new Date(date);
+      newDate.setHours(Number(hours));
+      newDate.setMinutes(Number(minutes));
+      return newDate.toISOString();
+    }
+
     const formatData = {
       ...formData,
       date: date.toISOString(),
-      time: date.toISOString(),
+      time: setTimeInDate(
+        date,
+        formData.time.slice(0, 2),
+        formData.time.slice(3)
+      ),
     };
 
     try {
