@@ -20,11 +20,11 @@ function Reminders() {
 
   useEffect(() => {
     fetchReminders();
-  }, [editedReminderDate]);
+  }, []);
 
   useEffect(() => {
     filterReminders(selectedDate.date);
-  }, [selectedDate, filteredReminders]);
+  }, [selectedDate, editedReminderDate]);
 
   return (
     <>
@@ -37,7 +37,7 @@ function Reminders() {
             <div
               className="ReminderTitle"
               style={{
-                backgroundColor: reminder.color,
+                backgroundColor: reminder.color || "",
                 color: "white",
               }}>
               {reminder.title}
@@ -45,12 +45,18 @@ function Reminders() {
             <div
               className="ReminderDescription"
               style={{
-                backgroundColor: "whitesmoke",
-                color: "black",
+                backgroundColor: reminder.color || "",
+                color: "white",
               }}>
               {reminder.description}
             </div>
-            <ReminderEdit id={reminder.id} />
+            <ReminderEdit
+              id={reminder.id}
+              time={reminder.time}
+              date={reminder.date.split("T")[0]}
+              city={reminder.city}
+              defaultColor={reminder.color}
+            />
             <WeatherWidget
               city={reminder.city.toLowerCase()}
               date={selectedDate.date.toISOString().split("T")[0]}
