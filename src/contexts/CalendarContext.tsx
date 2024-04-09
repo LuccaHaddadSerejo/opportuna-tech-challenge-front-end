@@ -78,7 +78,7 @@ export default function CalendarProvider({
     "June",
     "July",
     "August",
-    "Setember",
+    "September",
     "October",
     "November",
     "December",

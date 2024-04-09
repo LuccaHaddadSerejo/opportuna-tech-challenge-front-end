@@ -9,7 +9,7 @@ function SelectedDayDisplay() {
     <>
       <button className="CurrentSelectedDay">
         <>
-          {selectedDate.date.toLocaleDateString("pt-BR", {
+          {selectedDate.date.toLocaleDateString("en-US", {
             day: "numeric",
             month: "long",
             year: "numeric",
