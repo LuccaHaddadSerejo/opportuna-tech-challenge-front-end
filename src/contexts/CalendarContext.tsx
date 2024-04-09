@@ -45,6 +45,7 @@ export default function CalendarProvider({
   const [selectedDate, setSelectedDate] = useState<SelectedDateProps>({
     date: new Date(),
   });
+  console.log(selectedDate.date);
 
   const [currMonth, setcurrMonth] = useState<number>(new Date().getMonth() + 1);
   const [currYear, setCurrYear] = useState<number>(new Date().getFullYear());

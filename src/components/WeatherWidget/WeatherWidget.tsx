@@ -25,10 +25,16 @@ const API_KEY = "2cddc023dd09005c1b277ed47e80342e";
 
 function WeatherWidget({ city, date }: getWeatherProps) {
   const [weather, setWeather] = useState<WeatherData[]>([]);
-
   const currentDate = new Date().toISOString().split("T")[0];
 
-  const intervalOfDays = [currentDate];
+  const intervalOfDays = Array.from(
+    {
+      length: Math.abs(
+        parseInt(currentDate.split("-")[2]) - parseInt(date.split("-")[2])
+      ),
+    },
+    (_, i) => i + 1
+  );
 
   useEffect(() => {
     async function getWeather() {
@@ -37,7 +43,6 @@ function WeatherWidget({ city, date }: getWeatherProps) {
           `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`
         );
         const data = (await response.json()) as WeatherResponse;
-
         if (date == currentDate) {
           const currentDateData = data.list.filter((item) =>
             item.dt_txt.includes(currentDate)

@@ -21,7 +21,15 @@ function ReminderAdd() {
   const [reminderAddPopUp, setReminderAddPopUp] = useState(false);
 
   const onSubmit = (data: CreateReminder) => {
-    createReminder(data, selectedDate.date);
+    let correctDate = {} as Date;
+
+    if (!selectedDate) {
+      correctDate = new Date();
+    } else {
+      correctDate = selectedDate.date;
+    }
+
+    createReminder(data, correctDate);
     setReminderAddPopUp(false);
   };
 
@@ -36,13 +44,17 @@ function ReminderAdd() {
       {reminderAddPopUp && (
         <div className="OutsideContainer">
           <div className="AddReminderPopUp">
-            <form id="ReminderAddForm" onSubmit={handleSubmit(onSubmit)}>
+            <form
+              data-testid="ReminderAddForm"
+              id="ReminderAddForm"
+              onSubmit={handleSubmit(onSubmit)}>
               <input
                 {...register("title")}
                 type="text"
                 maxLength={30}
                 required
                 placeholder="Reminder Title"
+                data-testid="title"
               />
               {errors.title && <span>{errors.title.message}</span>}
               <textarea
@@ -50,6 +62,7 @@ function ReminderAdd() {
                 maxLength={30}
                 required
                 placeholder="Reminder Description"
+                data-testid="description"
               />
               {errors.description && <span>{errors.description.message}</span>}
               <input
@@ -57,6 +70,7 @@ function ReminderAdd() {
                 id="TimeInput"
                 type="time"
                 required
+                data-testid="time"
               />
               {errors.time && <span>{errors.time.message}</span>}
               <input
@@ -65,6 +79,7 @@ function ReminderAdd() {
                 maxLength={15}
                 required
                 placeholder="City"
+                data-testid="city"
               />
               {errors.city && <span>{errors.city.message}</span>}
               <div id="ColorPicker">
@@ -86,6 +101,7 @@ function ReminderAdd() {
                         {...register("color")}
                         value={color}
                         style={{ display: "none" }}
+                        data-testid={`color-${color}`}
                       />
                     </label>
                   )

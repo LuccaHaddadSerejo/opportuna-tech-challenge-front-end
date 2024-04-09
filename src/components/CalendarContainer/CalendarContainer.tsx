@@ -96,20 +96,24 @@ function Calendar() {
 
           const getCompleteDate =
             currMonth < 10
-              ? `${currYear}-0${currMonth}-${getCorrectDay}`
-              : `${currYear}-${currMonth}-${getCorrectDay}`;
+              ? `${currYear}-0${currMonth - 1}-${getCorrectDay}`
+              : `${currYear}-${currMonth - 1}-${getCorrectDay}`;
 
           const filterReminders = reminders.filter(
             (reminder: ReminderState) =>
               reminder.date.split("T")[0] === getCompleteDate
           );
 
+          const getSelectedDay = selectedDate.date.toISOString().split("T")[0];
+
           return (
             <button
               onClick={() =>
                 changeDateAndFilterReminders(prevMonthDay, true, false)
               }
-              className="PrevMonth"
+              className={
+                getCompleteDate === getSelectedDay ? "SelectedDay" : "PrevMonth"
+              }
               key={prevMonthDay}>
               {prevMonthDay}
               <ul>
@@ -118,7 +122,7 @@ function Calendar() {
                     <li
                       className="ReminderInCalendar"
                       style={{
-                        backgroundColor: reminder.color,
+                        backgroundColor: reminder.color || "",
                       }}
                       key={reminder.id}>
                       <p>{reminder.title}</p>
@@ -146,12 +150,18 @@ function Calendar() {
               reminder.date.split("T")[0] === getCompleteDate
           );
 
+          const getSelectedDay = selectedDate.date.toISOString().split("T")[0];
+
           return (
             <button
               onClick={() =>
                 changeDateAndFilterReminders(currMonthDay, false, false)
               }
-              className="MonthlyDay"
+              className={
+                getCompleteDate === getSelectedDay
+                  ? "SelectedDay"
+                  : "MonthlyDay"
+              }
               key={currMonthDay}>
               {currMonthDay}
               <ul>
@@ -160,7 +170,7 @@ function Calendar() {
                     <li
                       className="ReminderInCalendar"
                       style={{
-                        backgroundColor: reminder.color,
+                        backgroundColor: reminder.color || "",
                       }}
                       key={reminder.id}>
                       <p>{reminder.title}</p>
@@ -188,12 +198,16 @@ function Calendar() {
               reminder.date.split("T")[0] === getCompleteDate
           );
 
+          const getSelectedDay = selectedDate.date.toISOString().split("T")[0];
+
           return (
             <button
               onClick={() =>
                 changeDateAndFilterReminders(nextMonthDay, false, true)
               }
-              className="NextMonth"
+              className={
+                getCompleteDate === getSelectedDay ? "SelectedDay" : "NextMonth"
+              }
               key={nextMonthDay}>
               {nextMonthDay}
               <ul>
@@ -202,7 +216,7 @@ function Calendar() {
                     <li
                       className="ReminderInCalendar"
                       style={{
-                        backgroundColor: reminder.color,
+                        backgroundColor: reminder.color || "",
                       }}
                       key={reminder.id}>
                       <p>{reminder.title}</p>
