@@ -11,7 +11,7 @@
   border-left: 1px solid #ddd;
 }
 
-.SubHeaderRightContainer{
+.SubHeaderRightContainer {
   display: flex;
   font-size: 1em;
   justify-content: center;
@@ -27,9 +27,11 @@
   justify-content: center;
   align-items: center;
   background-color: none;
+  max-height: 450px;
+  overflow: auto;
 }
 
-.DeleteCurrentDayRemindersContainer{
+.DeleteCurrentDayRemindersContainer {
   margin-top: auto;
   font-size: 1em;
   padding: 10px;

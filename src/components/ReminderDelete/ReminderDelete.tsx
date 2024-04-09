@@ -1,9 +1,22 @@
+import { useContext } from "react";
 import "./ReminderDelete.css";
+import { RemindersContext } from "../../contexts/RemindersContext";
 
-function ReminderDelete() {
+interface ReminderDeleteProps {
+  id: number;
+}
+
+function ReminderDelete({ id }: ReminderDeleteProps) {
+  const { deleteReminder } = useContext(RemindersContext);
+
   return (
     <>
-      <button className="ReminderDeleteButton">Delete</button>
+      <button
+        onClick={() => deleteReminder(id)}
+        type="button"
+        className="ReminderDeleteButton">
+        Delete
+      </button>
     </>
   );
 }

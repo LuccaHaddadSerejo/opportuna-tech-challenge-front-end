@@ -1,16 +1,25 @@
+import { useContext } from "react";
 import "./MonthSelect.css";
+import { CalendarContext } from "../../contexts/CalendarContext";
 
 function MonthSelect() {
+  const { goToNextMonth, goToPreviousMonth, currMonthName } =
+    useContext(CalendarContext);
+
   return (
     <>
       <div className="SubMonthsContainer">
-        <button>Prev</button>
+        <button onClick={() => goToPreviousMonth()} type="button">
+          Prev
+        </button>
       </div>
 
-      <div className="CalendarMonth">Abril</div>
+      <div className="CalendarMonth">{currMonthName}</div>
 
       <div className="AddMonthsContainer">
-        <button>Next</button>
+        <button onClick={() => goToNextMonth()} type="button">
+          Next
+        </button>
       </div>
     </>
   );

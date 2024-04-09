@@ -18,8 +18,23 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    //absolute import
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
-  "include": ["src", "to delete/Calendar", "to delete/CalendarReminder", "to delete/CurrentDate", "to delete/CurrentMonthButton", "to delete/Footer", "to delete/MainContainer"],
+  "include": [
+    "src",
+    "to delete/Calendar",
+    "to delete/CalendarReminder",
+    "to delete/CurrentDate",
+    "to delete/CurrentMonthButton",
+    "to delete/Footer",
+    "to delete/MainContainer",
+    "./jest.setup.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

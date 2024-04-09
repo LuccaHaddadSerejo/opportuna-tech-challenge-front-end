@@ -33,6 +33,9 @@ Crie um repositório e implemente as funcionalidades que estão faltando:
 # Para rodar a aplicação, com Yarn instalado, execute os comandos abaixo:
 yarn install
 yarn dev
+
+# Para rodar os testes, execute os comandos abaixo:
+yarn test
 ```
 
 Após implementar as funcionalidades, nos envie o link do seu repositório por e-mail (Yuri e Arthur) para que possamos avaliar o seu código.
