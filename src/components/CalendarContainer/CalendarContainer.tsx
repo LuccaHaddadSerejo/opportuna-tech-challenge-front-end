@@ -118,7 +118,7 @@ function Calendar() {
                     <li
                       className="ReminderInCalendar"
                       style={{
-                        backgroundColor: reminder.color,
+                        backgroundColor: reminder.color || "",
                       }}
                       key={reminder.id}>
                       <p>{reminder.title}</p>
@@ -160,7 +160,7 @@ function Calendar() {
                     <li
                       className="ReminderInCalendar"
                       style={{
-                        backgroundColor: reminder.color,
+                        backgroundColor: reminder.color || "",
                       }}
                       key={reminder.id}>
                       <p>{reminder.title}</p>
@@ -202,7 +202,7 @@ function Calendar() {
                     <li
                       className="ReminderInCalendar"
                       style={{
-                        backgroundColor: reminder.color,
+                        backgroundColor: reminder.color || "",
                       }}
                       key={reminder.id}>
                       <p>{reminder.title}</p>
